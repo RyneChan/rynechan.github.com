@@ -10,6 +10,7 @@
   <title>小白研究所</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="年轻的心里面是坚定的信念">
+<meta name="keywords" content="前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
 <meta property="og:type" content="website">
 <meta property="og:title" content="小白研究所">
 <meta property="og:url" content="http://yoursite.com/index.html">
@@ -163,7 +164,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/02/07/js-四级联动是如何实现的/">js-联动是如何实现的</a>
+      <a class="article-title" href="/2018/02/07/js-四级联动是如何实现的/">[js]联动是如何实现的</a>
     </h1>
   
 
@@ -176,18 +177,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>工作中常常会遇到一些需要联动的地方。例如用户收货地址，商家地址选择，出生地址选择等等。</p>
+        <p><img src="https://github.com/RyneChan/rynechan.github.io/blob/master/img/scrollbar_arrow.png?raw=true" alt="匠心"><br>工作中常常会遇到一些需要联动的地方。例如用户收货地址，商家地址选择，出生地址选择等等。</p>
 <p>例如你选择了省份的时候，你需要选择城市，选择完城市要有对应的地区，选择完地区要有对应的街道，乡之类的。这样就是完成了省，市，区，街道的四级联动。</p>
 <p>在帮公司开发的小程序商城中，遇到了一个小插曲。小程序原生自带的组件里面，有省市区的三级联动。但是我觉得不够。我觉得如果能加上一个街道会更好。毕竟现在基本某宝某东，收货地址都会有一个街道的选择，虽然我们穷，但是志气还是要有的，不是吗哈哈。</p>
 <p>这篇除了科普一下联动的实现。在最后也会给大家讲述一下小程序开发中。如何基于原生小程序的组件，然后增加一个第四级的联动。</p>
-<p>现在这个省市区的demo,带你认识一下什么是联动。</p>
-<p>先上一点代码，css以及html的。做出来不是很美观，但只是想告诉你一下这个原理。<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">span</span>&#123;</span><br><span class="line">	<span class="attribute">color</span>:red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.proList</span>,<span class="selector-class">.cityList</span>,<span class="selector-class">.regList</span>&#123;</span><br><span class="line">	<span class="attribute">float</span>: left;</span><br><span class="line">	<span class="attribute">width</span>: <span class="number">90px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span>省：<span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">'provinces'</span>&gt;</span>请选择<span class="tag">&lt;/<span class="name">span</span>&gt;</span> 市：<span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">'city'</span>&gt;</span>请选择<span class="tag">&lt;/<span class="name">span</span>&gt;</span> 区：<span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">'region'</span>&gt;</span>请选择<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">'proList'</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">'cityList'</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">'regList'</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>先模拟一下数据。模拟我们拿到了省份，城市以及区名字。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> data = &#123;</span><br><span class="line">			<span class="string">"广东省"</span>:&#123;</span><br><span class="line">				<span class="string">"广州市"</span>:[</span><br><span class="line">					<span class="string">"海珠区"</span>,</span><br><span class="line">					<span class="string">"荔湾区"</span>,</span><br><span class="line">					<span class="string">"花都区"</span>,</span><br><span class="line">					<span class="string">"从化区"</span></span><br><span class="line">				],</span><br><span class="line">				<span class="string">"佛山市"</span>:[</span><br><span class="line">					<span class="string">"顺德区"</span>,</span><br><span class="line">					<span class="string">"禅城区"</span>,</span><br><span class="line">					<span class="string">"三水区"</span></span><br><span class="line">				],</span><br><span class="line">				<span class="string">"茂名市"</span>:[</span><br><span class="line">					<span class="string">"高州市"</span>,</span><br><span class="line">					<span class="string">"信宜市"</span>,</span><br><span class="line">					<span class="string">"化州市"</span></span><br><span class="line">				]</span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="string">"湖南市"</span>:&#123;</span><br><span class="line">				<span class="string">"长沙市"</span>:[</span><br><span class="line">					<span class="string">"芙蓉区"</span>,</span><br><span class="line">					<span class="string">"天心区"</span>,</span><br><span class="line">					<span class="string">"雨花区"</span></span><br><span class="line">				]</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure></p>
-<p>然后获取一下元素对象<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">      <span class="keyword">var</span> pro = <span class="built_in">document</span>.querySelector(<span class="string">'.provinces'</span>);</span><br><span class="line"><span class="keyword">var</span> city = <span class="built_in">document</span>.querySelector(<span class="string">'.city'</span>);</span><br><span class="line"><span class="keyword">var</span> reg = <span class="built_in">document</span>.querySelector(<span class="string">'.region'</span>);</span><br><span class="line">      <span class="keyword">var</span> proList = <span class="built_in">document</span>.querySelector(<span class="string">'.proList'</span>);</span><br><span class="line"><span class="keyword">var</span> cityList = <span class="built_in">document</span>.querySelector(<span class="string">'.cityList'</span>);</span><br><span class="line"><span class="keyword">var</span> regList = <span class="built_in">document</span>.querySelector(<span class="string">'.regList'</span>);</span><br></pre></td></tr></table></figure></p>
-<p>获取到之后。我们要理清一下思绪。我们现在要做什么。我们要做的是：<br>点击省份，出现省份列表。<br>然后点击省份列表里面的一项。然后省份名字改成这一项的名字，然后城市列表出现。<br>点击城市列表的一项，城市名称改为这个名字。然后出现区列表出现。<br>点击区列表中的一项，区名字改成这个名字。区列表消失。<br>完成</p>
-<p>只是一个简易版所以我就内嵌地做了。可能代码有点乱。你可以看一下 <a href="2018/02/06/js-事件绑定、事件监听、事件委托/">事件委托</a></p>
-
+<p>现在这个省市区的demo,带你认识一下什么是联动。<br>
+        
+          <a class="article-more-a" href="/2018/02/07/js-四级联动是如何实现的/#more">more >></a>
+        
       
 
       
@@ -200,7 +197,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">js 小程序</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">js</a>
         		</li>
       		
 		</ul>
@@ -262,46 +259,10 @@
       
         <p>事件机制可以说是js很重要的一环。而很多人不懂这些事件之间有什么差别。这些对了解js了解前端很重要。</p>
 <h1 id="事件绑定"><a href="#事件绑定" class="headerlink" title="事件绑定"></a>事件绑定</h1><p>事件绑定其实并不难理解，因为平常用到最多的就是事件绑定，可能一开始接触，最多的也是事件绑定。</p>
-<p>我们可以在DOM元素上直接绑定各种onclick,onmousedown,onmouseup,ondbclick等等</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">'test'</span>&gt;</span>测试<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> test = <span class="built_in">document</span>.querySelector(<span class="string">'.test'</span>);</span><br><span class="line">test.onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'点击了绑定js'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这样就是把一个function绑定在了js数据里面。<br>又或者这样<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">'test'</span> <span class="attr">onclick</span>=<span class="string">'test()'</span>&gt;</span>测试<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'点击了绑定DOM'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这样就是把一个function绑定在了一个DOM元素上。</p>
-<p>建议在js代码中绑定事件，这样可以把js代码与html代码分离，这样文档结构清晰，也便于管理和开发。</p>
-<h1 id="事件监听"><a href="#事件监听" class="headerlink" title="事件监听"></a>事件监听</h1><p>关于事件监听，w3c规范中定义了事件的三个阶段，依次是捕获阶段，目标阶段，冒泡阶段。</p>
-<p>在上古时代，Netscape制定了JavaScript的一套事件驱动机制（即事件捕获），随即IE也推出了自己的一套事件驱动机制（即事件冒泡）。最后W3C规范了两种事件机制，分为捕获阶段、目标阶段、冒泡阶段。IE8以前IE一直坚持自己的事件机制（前端人员一直头痛的兼容性问题），IE9以后IE也支持了W3C规范。</p>
-<p>W3C规范</p>
-<p>语法：<br>        element.addEventListener(event, function, useCapture)</p>
-<p>event：(必需)事件名，支持所以DOM事件。如onclick,onmousedown等等。<br>function：(必需)指定事件触发时执行的函数。如上文的test。<br>useCapture：(可选)指定事件是否在捕获或者冒泡阶段执行。若为true,就是捕获。若是false，则是冒泡。默认是false，冒泡。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">'test'</span>&gt;</span>测试<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ie8以下不支持</span></span><br><span class="line"><span class="built_in">document</span>.querySelector(<span class="string">'.test'</span>).addEventListener(<span class="string">'click'</span>,test);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'点击了事件监听'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>ie标准</p>
-<p>语法：</p>
-<pre><code>element.attachEvent(event, function)
-</code></pre><p>event：(必需)事件类型。需要加’on’;例如’onclick’。<br>function：(必需)指定的事件触发时候的函数。如上文的test。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">'test'</span>&gt;</span>测试<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">'test'</span>).attachEvent(<span class="string">'onclick'</span>,test);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    alert(<span class="string">'点击了ie标准的事件监听'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>事件监听的优点</p>
-<p>1、可以绑定多个事件。如果你用了事件绑定，那最后一次的绑定会把前面的覆盖。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> btn = <span class="built_in">document</span>.querySelector(<span class="string">'.btn'</span>);</span><br><span class="line">btn.onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'我是第一个'</span>);</span><br><span class="line">&#125;</span><br><span class="line">btn.onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'我是第二个'</span>);</span><br><span class="line">&#125;</span><br><span class="line">btn.onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'我是第三个'</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//执行的时候，只会执行第三个，前面的都会被覆盖掉。</span></span><br></pre></td></tr></table></figure>
-<p>当你使用事件监听，就会全部都执行。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> btn = <span class="built_in">document</span>.querySelector(<span class="string">'.btn'</span>);</span><br><span class="line"></span><br><span class="line">btn.addEventListener(<span class="string">'click'</span>,test1);</span><br><span class="line">btn.addEventListener(<span class="string">'click'</span>,test2);</span><br><span class="line">btn.addEventListener(<span class="string">'click'</span>,test3);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test1</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'我是第一个'</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test2</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'我是第二个'</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test3</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'我是第三个'</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//执行的时候会三个都执行，不会覆盖掉其他的</span></span><br></pre></td></tr></table></figure></p>
-<p>2、可以解除相应的绑定<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> btn = <span class="built_in">document</span>.querySelector(<span class="string">'.btn'</span>);</span><br><span class="line"></span><br><span class="line">btn.addEventListener(<span class="string">'click'</span>,test1);</span><br><span class="line">btn.addEventListener(<span class="string">'click'</span>,test2);</span><br><span class="line">btn.removeEventListener(<span class="string">'click'</span>,test2);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test1</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'我是第一个'</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test2</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'我是第二个'</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//执行的时候只会执行第一个，第二个已经被remove了，不会执行了。</span></span><br></pre></td></tr></table></figure></p>
-<p>封装事件监听<br>这样就把ie与w3c的标准都集合了起来。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//绑定监听事件</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addEventHandler</span>(<span class="params">target,type,fn</span>)</span>&#123;</span><br><span class="line"> <span class="keyword">if</span>(target.addEventListener)&#123;</span><br><span class="line">    target.addEventListener(type,fn);</span><br><span class="line"> &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    target.attachEvent(<span class="string">"on"</span>+type,fn);</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//移除监听事件</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">removeEventHandler</span>(<span class="params">target,type,fn</span>)</span>&#123;</span><br><span class="line"> <span class="keyword">if</span>(target.removeEventListener)&#123;</span><br><span class="line">    target.removeEventListener(type,fn);</span><br><span class="line"> &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    target.detachEvent(<span class="string">"on"</span>+type,fn);</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h1 id="事件委托（事件代理）"><a href="#事件委托（事件代理）" class="headerlink" title="事件委托（事件代理）"></a>事件委托（事件代理）</h1><p>事件委托的原理就是利用冒泡的原理，把事件加到父元素或祖先元素上。触发到这个目标的时候就会发生执行的效果。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">'test'</span>&gt;</span>测试<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> test = <span class="built_in">document</span>.querySelector(<span class="string">'.test'</span>);</span><br><span class="line"><span class="built_in">document</span>.onclick = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span><br><span class="line">    event = event || <span class="built_in">window</span>.event;<span class="comment">//这里用的是短路表达方法。当event为真的时候，event就不会等于window.event</span></span><br><span class="line">    <span class="keyword">var</span> target = event.target || event.srcElement;</span><br><span class="line">    <span class="keyword">if</span>(target == test)&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'触发了事件委托~'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>事件委托的优点<br>1、提高了javaScript的优点。事件委托可以显著提高事件的处理速度，减少内存的占用。<br>如果是传统的写法，需要一个个地绑定<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">'test1'</span>&gt;</span>测试1<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">'test2'</span>&gt;</span>测试2<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">'test3'</span>&gt;</span>测试3<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> test1 = <span class="built_in">document</span>.querySelector(<span class="string">'.test1'</span>);</span><br><span class="line"><span class="keyword">var</span> test2 = <span class="built_in">document</span>.querySelector(<span class="string">'.test2'</span>);</span><br><span class="line"><span class="keyword">var</span> test3 = <span class="built_in">document</span>.querySelector(<span class="string">'.test3'</span>);</span><br><span class="line"></span><br><span class="line">test1.onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'事件绑定第1个'</span>)</span><br><span class="line">&#125;</span><br><span class="line">test2.onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'事件绑定第2个'</span>)</span><br><span class="line">&#125;</span><br><span class="line">test3.onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'事件绑定第3个'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>当你用了事件委托，就可以改成这样<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> test1 = <span class="built_in">document</span>.querySelector(<span class="string">'.test1'</span>);</span><br><span class="line"><span class="keyword">var</span> test2 = <span class="built_in">document</span>.querySelector(<span class="string">'.test2'</span>);</span><br><span class="line"><span class="keyword">var</span> test3 = <span class="built_in">document</span>.querySelector(<span class="string">'.test3'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">document</span>.addEventListener(<span class="string">"click"</span>,<span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> target = event.target || event.srcElement;</span><br><span class="line">    <span class="keyword">if</span>(target == test1)&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'事件委托1'</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(target == test2)&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'事件委托2'</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(target == test3)&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'事件委托3'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
-<p>2、动态添加的DOM元素，不需要因为元素的变动而修改事件绑定。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">"list"</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">li</span> <span class="attr">id</span>=<span class="string">"item1"</span> &gt;</span>item1<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">li</span> <span class="attr">id</span>=<span class="string">"item2"</span> &gt;</span>item2<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">li</span> <span class="attr">id</span>=<span class="string">"item3"</span> &gt;</span>item3<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> list = <span class="built_in">document</span>.getElementById(<span class="string">"list"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> item = list.getElementsByTagName(<span class="string">"li"</span>);</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;item.length;i++)&#123;<span class="comment">//通过循环把事件都绑定上去。</span></span><br><span class="line"> (<span class="function"><span class="keyword">function</span>(<span class="params">i</span>)</span>&#123;</span><br><span class="line"> item[i].onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"> alert(item[i].innerHTML);</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;)(i)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建一个新的元素</span></span><br><span class="line"><span class="keyword">var</span> node=<span class="built_in">document</span>.createElement(<span class="string">"li"</span>);</span><br><span class="line"><span class="keyword">var</span> textnode=<span class="built_in">document</span>.createTextNode(<span class="string">"item4"</span>);</span><br><span class="line">node.appendChild(textnode);</span><br><span class="line">list.appendChild(node);</span><br></pre></td></tr></table></figure>
-<p>点击item1到item3都有响应。但点击item4的时候事件没有响应。说明传统的事件无法对动态添加的元素动态添加事件。</p>
-<p>事件委托<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">"list"</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">li</span> <span class="attr">id</span>=<span class="string">"item1"</span> &gt;</span>item1<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">li</span> <span class="attr">id</span>=<span class="string">"item2"</span> &gt;</span>item2<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">li</span> <span class="attr">id</span>=<span class="string">"item3"</span> &gt;</span>item3<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> list = <span class="built_in">document</span>.getElementById(<span class="string">"list"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">document</span>.addEventListener(<span class="string">"click"</span>,<span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span><br><span class="line"> <span class="keyword">var</span> target = event.target;</span><br><span class="line"> <span class="keyword">if</span>(target.nodeName == <span class="string">"LI"</span>)&#123;</span><br><span class="line"> alert(target.innerHTML);</span><br><span class="line"> &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> node=<span class="built_in">document</span>.createElement(<span class="string">"li"</span>);</span><br><span class="line"><span class="keyword">var</span> textnode=<span class="built_in">document</span>.createTextNode(<span class="string">"item4"</span>);</span><br><span class="line">node.appendChild(textnode);</span><br><span class="line">list.appendChild(node);</span><br></pre></td></tr></table></figure>
-<p>点击item4的时候，item4有响应。说明事件委托可以用于新添加的元素动态添加事件。</p>
-<p><a href="http://www.jb51.net/article/93752.htm" target="_blank" rel="noopener">原文</a><br>本文仅为参考原文的一个学习心得</p>
-
+<p>我们可以在DOM元素上直接绑定各种onclick,onmousedown,onmouseup,ondbclick等等<br>
+        
+          <a class="article-more-a" href="/2018/02/06/js-事件绑定、事件监听、事件委托/#more">more >></a>
+        
       
 
       
@@ -449,18 +410,10 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="类-classes-其实是一种“特殊的函数”"><a href="#类-classes-其实是一种“特殊的函数”" class="headerlink" title="类(classes)其实是一种“特殊的函数”"></a>类(classes)其实是一种“特殊的函数”</h1><p>就像你能够定义函数表达式与函数声明一样。类语法也有两个组成部分：类表达式和类声明。</p>
-<h2 id="如何定义一个类？两种办法，一个是类的声明，一个是类表达式。"><a href="#如何定义一个类？两种办法，一个是类的声明，一个是类表达式。" class="headerlink" title="如何定义一个类？两种办法，一个是类的声明，一个是类表达式。"></a>如何定义一个类？两种办法，一个是类的声明，一个是类表达式。</h2><h3 id="类声明"><a href="#类声明" class="headerlink" title="类声明"></a>类声明</h3><p>定义一个类的一种方法是使用类声明。</p>
-<p>这里类名是xixixi;<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">xixixi</span></span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(width,height)&#123;</span><br><span class="line">        <span class="keyword">this</span>.height = height;</span><br><span class="line">        <span class="keyword">this</span>.width = width;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    getSize()&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'height:'</span>+<span class="keyword">this</span>.height+<span class="string">',width:'</span>+<span class="keyword">this</span>.width);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h4 id="函数声明与类声明之间有一个重要的区别，就是函数声明会提升。而类声明不会。"><a href="#函数声明与类声明之间有一个重要的区别，就是函数声明会提升。而类声明不会。" class="headerlink" title="函数声明与类声明之间有一个重要的区别，就是函数声明会提升。而类声明不会。"></a>函数声明与类声明之间有一个重要的区别，就是函数声明会提升。而类声明不会。</h4><p>声明提升是什么来的？这关乎到js的预解析机制。大概说下，就是js运行之前，会先很浅地运行一次。将一些var,function存起来。<br>回到声明这里。<br>如果是一个函数声明<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">fun();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fun</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'我在下面！！'</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//打印结果我在下面！！</span></span><br></pre></td></tr></table></figure></p>
-<p>或者</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fun</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'我在上面！！'</span>);</span><br><span class="line">&#125;</span><br><span class="line">fun();</span><br><span class="line"><span class="comment">//打印结果我在上面！！</span></span><br></pre></td></tr></table></figure>
-<p>无论你是在运行这个函数之前声明还是在之后声明，都是无所谓的，都能准确打印出。</p>
-<p>如果是类呢？</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> p = <span class="keyword">new</span> Rectangle();</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rectangle</span></span>&#123;&#125;;</span><br><span class="line"><span class="comment">//Uncaught ReferenceError: Rectangle is not defined</span></span><br></pre></td></tr></table></figure>
-<p>‘Rectangle is not defined’,找不到Rectangle。</p>
-<p>所以类必须要在使用之前声明。因为类的声明不会像函数的声明那样提升。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//没问题</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rectangle</span></span>&#123;&#125;;</span><br><span class="line"><span class="keyword">let</span> p = <span class="keyword">new</span> Rectangle();</span><br></pre></td></tr></table></figure></p>
-<h3 id="类表达式"><a href="#类表达式" class="headerlink" title="类表达式"></a>类表达式</h3><p>类表达式可以是命名的或者是匿名的。赋予一个命名类表达式的名称是类的主体在本地的名称。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 匿名类 */</span> </span><br><span class="line"><span class="keyword">let</span> Rectangle = <span class="class"><span class="keyword">class</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(height, width) &#123;</span><br><span class="line">    <span class="keyword">this</span>.height = height;</span><br><span class="line">    <span class="keyword">this</span>.width = width;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 命名的类 */</span> </span><br><span class="line"><span class="keyword">let</span> Rectangle = <span class="class"><span class="keyword">class</span> <span class="title">Rec</span> </span>&#123;   <span class="comment">//Rectangle是这个类的本地名称</span></span><br><span class="line">  <span class="keyword">constructor</span>(height, width) &#123;</span><br><span class="line">    <span class="keyword">this</span>.height = height;</span><br><span class="line">    <span class="keyword">this</span>.width = width;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-
+<h2 id="如何定义一个类？两种办法，一个是类的声明，一个是类表达式。"><a href="#如何定义一个类？两种办法，一个是类的声明，一个是类表达式。" class="headerlink" title="如何定义一个类？两种办法，一个是类的声明，一个是类表达式。"></a>如何定义一个类？两种办法，一个是类的声明，一个是类表达式。</h2><h3 id="类声明"><a href="#类声明" class="headerlink" title="类声明"></a>类声明</h3><p>定义一个类的一种方法是使用类声明。<br>
+        
+          <a class="article-more-a" href="/2018/02/02/es6-关于类classes(上)/#more">more >></a>
+        
       
 
       
@@ -536,19 +489,10 @@
         <p>es6已经出台一段时间，也渐渐成为了主流。</p>
 <p>还在撸es5的东西吗，那你就有点out了。</p>
 <p>浅谈一下关于es6的箭头函数。</p>
-<p>箭头函数是一种匿名函数，浅化了对于函数的定义。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> (<span class="params">a</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a);</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//箭头函数</span></span><br><span class="line">(a)=&gt;&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a);</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>对比一下就可以看出，改动的地方在哪里。但箭头函数不仅仅是变动了这些。<br>如果，你只有一个参数的时候</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//可以写成这样</span></span><br><span class="line">a=&gt;&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a);</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>但是这个方式只能用于只有一个参数，当你有多个参数的时候，要写成这样。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(a,b,c)=&gt;&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a+b+c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>当你只需要return，那就可以更简化了。例如这样。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>(<span class="params">a,b</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a+b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//箭头函数,花括号也可以不用了</span></span><br><span class="line">(a,b)=&gt;a+b</span><br></pre></td></tr></table></figure></p>
-<p>要知道，箭头函数的this指向与ECMAScript 3/5中的指向并不一样。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.age = <span class="number">0</span>;</span><br><span class="line">  setInterval(<span class="function"><span class="keyword">function</span> <span class="title">growUp</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.age++;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.age)</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> Person();</span><br><span class="line"><span class="comment">//循环打印NAN</span></span><br></pre></td></tr></table></figure>
-<p>因为找不到age，所以就会打印NAN，因为this指向没有指向外边的那个age</p>
-<p>在ECMAScript 3/5中，需要这样<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.age = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">var</span> that = <span class="keyword">this</span>;</span><br><span class="line">  setInterval(<span class="function"><span class="keyword">function</span> <span class="title">growUp</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    that.age++;</span><br><span class="line">    <span class="built_in">console</span>.log(that.age)</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> Person();</span><br></pre></td></tr></table></figure></p>
-<p>但是如果你用箭头函数，就轻松啦<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.age = <span class="number">0</span>;</span><br><span class="line">  setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">this</span>.age++; </span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.age)</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> Person();</span><br></pre></td></tr></table></figure></p>
-<p>还有更多关于<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/Arrow_functions" target="_blank" rel="noopener">箭头函数</a></p>
-
+<p>箭头函数是一种匿名函数，浅化了对于函数的定义。<br>
+        
+          <a class="article-more-a" href="/2018/02/01/es6-关于箭头函数/#more">more >></a>
+        
       
 
       
@@ -601,159 +545,10 @@
 
 
   
-    <article id="post-React学习之路" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/31/React学习之路/">React学习之路</a>
-    </h1>
-  
-
-        
-        <a href="/2018/01/31/React学习之路/" class="archive-article-date">
-  	<time datetime="2018-01-31T08:47:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-31</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>推荐一本书。应该是开源的。因为是前端早读课的情大分享出来的。<br>可以说是我目前看过的最适合入门的一本书，写得很细致。<br>分享一个<a href="http://ac-n1yvuvr8.clouddn.com/8de3a48b226c41053841.pdf" target="_blank" rel="noopener">PDF版本</a></p>
-<p>哎开始研究一下React吧，看样子挺好玩的。pdf内容不多，希望我们能一起进步。</p>
-<!-- ![匠心](http://ac-wpvbfi5m.clouddn.com/5d8a8298003d0efd57a3.png) -->
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">React</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/01/31/React学习之路/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-test1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/31/test1/">start</a>
-    </h1>
-  
-
-        
-        <a href="/2018/01/31/test1/" class="archive-article-date">
-  	<time datetime="2018-01-31T02:22:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-31</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>开心的<br>Welcome to <a href="https://www.baidu.com" target="_blank" rel="noopener">开心的</a>!<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ hexo <span class="keyword">new</span> <span class="string">"My New Post"</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">completionZero</span>(<span class="params">num</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> num.length==<span class="number">1</span>?<span class="string">'0'</span>+num:num;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.test</span>&#123;</span><br><span class="line">    <span class="attribute">width</span>:<span class="number">100px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span>test<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://www.baidu.com" target="_blank" rel="noopener">test</a></p>
-<p>测试文档就不删了，权当作开篇吧。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/01/31/test1/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    </nav>
   
 
 

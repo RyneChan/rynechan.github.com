@@ -7,20 +7,22 @@
   <meta name="baidu-site-verification" content="pn4tptRakw" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>js-联动是如何实现的 | 小白研究所</title>
+  <title>[js]联动是如何实现的 | 小白研究所</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="工作中常常会遇到一些需要联动的地方。例如用户收货地址，商家地址选择，出生地址选择等等。 例如你选择了省份的时候，你需要选择城市，选择完城市要有对应的地区，选择完地区要有对应的街道，乡之类的。这样就是完成了省，市，区，街道的四级联动。 在帮公司开发的小程序商城中，遇到了一个小插曲。小程序原生自带的组件里面，有省市区的三级联动。但是我觉得不够。我觉得如果能加上一个街道会更好。毕竟现在基本某宝某东，收货">
-<meta name="keywords" content="js 小程序">
+<meta name="keywords" content="js">
 <meta property="og:type" content="article">
-<meta property="og:title" content="js-联动是如何实现的">
+<meta property="og:title" content="[js]联动是如何实现的">
 <meta property="og:url" content="http://yoursite.com/2018/02/07/js-四级联动是如何实现的/index.html">
 <meta property="og:site_name" content="小白研究所">
 <meta property="og:description" content="工作中常常会遇到一些需要联动的地方。例如用户收货地址，商家地址选择，出生地址选择等等。 例如你选择了省份的时候，你需要选择城市，选择完城市要有对应的地区，选择完地区要有对应的街道，乡之类的。这样就是完成了省，市，区，街道的四级联动。 在帮公司开发的小程序商城中，遇到了一个小插曲。小程序原生自带的组件里面，有省市区的三级联动。但是我觉得不够。我觉得如果能加上一个街道会更好。毕竟现在基本某宝某东，收货">
 <meta property="og:locale" content="zh">
-<meta property="og:updated_time" content="2018-02-07T07:59:57.100Z">
+<meta property="og:image" content="https://github.com/RyneChan/rynechan.github.io/blob/master/img/scrollbar_arrow.png?raw=true">
+<meta property="og:updated_time" content="2018-02-07T08:49:54.498Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="js-联动是如何实现的">
+<meta name="twitter:title" content="[js]联动是如何实现的">
 <meta name="twitter:description" content="工作中常常会遇到一些需要联动的地方。例如用户收货地址，商家地址选择，出生地址选择等等。 例如你选择了省份的时候，你需要选择城市，选择完城市要有对应的地区，选择完地区要有对应的街道，乡之类的。这样就是完成了省，市，区，街道的四级联动。 在帮公司开发的小程序商城中，遇到了一个小插曲。小程序原生自带的组件里面，有省市区的三级联动。但是我觉得不够。我觉得如果能加上一个街道会更好。毕竟现在基本某宝某东，收货">
+<meta name="twitter:image" content="https://github.com/RyneChan/rynechan.github.io/blob/master/img/scrollbar_arrow.png?raw=true">
   
     <link rel="alternative" href="/atom.xml" title="小白研究所" type="application/atom+xml">
   
@@ -163,7 +165,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      js-联动是如何实现的
+      [js]联动是如何实现的
     </h1>
   
 
@@ -176,12 +178,11 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>工作中常常会遇到一些需要联动的地方。例如用户收货地址，商家地址选择，出生地址选择等等。</p>
+        <p><img src="https://github.com/RyneChan/rynechan.github.io/blob/master/img/scrollbar_arrow.png?raw=true" alt="匠心"><br>工作中常常会遇到一些需要联动的地方。例如用户收货地址，商家地址选择，出生地址选择等等。</p>
 <p>例如你选择了省份的时候，你需要选择城市，选择完城市要有对应的地区，选择完地区要有对应的街道，乡之类的。这样就是完成了省，市，区，街道的四级联动。</p>
 <p>在帮公司开发的小程序商城中，遇到了一个小插曲。小程序原生自带的组件里面，有省市区的三级联动。但是我觉得不够。我觉得如果能加上一个街道会更好。毕竟现在基本某宝某东，收货地址都会有一个街道的选择，虽然我们穷，但是志气还是要有的，不是吗哈哈。</p>
 <p>这篇除了科普一下联动的实现。在最后也会给大家讲述一下小程序开发中。如何基于原生小程序的组件，然后增加一个第四级的联动。</p>
-<p>现在这个省市区的demo,带你认识一下什么是联动。</p>
-<p>先上一点代码，css以及html的。做出来不是很美观，但只是想告诉你一下这个原理。<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">span</span>&#123;</span><br><span class="line">	<span class="attribute">color</span>:red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.proList</span>,<span class="selector-class">.cityList</span>,<span class="selector-class">.regList</span>&#123;</span><br><span class="line">	<span class="attribute">float</span>: left;</span><br><span class="line">	<span class="attribute">width</span>: <span class="number">90px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>现在这个省市区的demo,带你认识一下什么是联动。<br><a id="more"></a><br>先上一点代码，css以及html的。做出来不是很美观，但只是想告诉你一下这个原理。<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">span</span>&#123;</span><br><span class="line">	<span class="attribute">color</span>:red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.proList</span>,<span class="selector-class">.cityList</span>,<span class="selector-class">.regList</span>&#123;</span><br><span class="line">	<span class="attribute">float</span>: left;</span><br><span class="line">	<span class="attribute">width</span>: <span class="number">90px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span>省：<span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">'provinces'</span>&gt;</span>请选择<span class="tag">&lt;/<span class="name">span</span>&gt;</span> 市：<span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">'city'</span>&gt;</span>请选择<span class="tag">&lt;/<span class="name">span</span>&gt;</span> 区：<span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">'region'</span>&gt;</span>请选择<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">'proList'</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">'cityList'</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">'regList'</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>先模拟一下数据。模拟我们拿到了省份，城市以及区名字。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> data = &#123;</span><br><span class="line">			<span class="string">"广东省"</span>:&#123;</span><br><span class="line">				<span class="string">"广州市"</span>:[</span><br><span class="line">					<span class="string">"海珠区"</span>,</span><br><span class="line">					<span class="string">"荔湾区"</span>,</span><br><span class="line">					<span class="string">"花都区"</span>,</span><br><span class="line">					<span class="string">"从化区"</span></span><br><span class="line">				],</span><br><span class="line">				<span class="string">"佛山市"</span>:[</span><br><span class="line">					<span class="string">"顺德区"</span>,</span><br><span class="line">					<span class="string">"禅城区"</span>,</span><br><span class="line">					<span class="string">"三水区"</span></span><br><span class="line">				],</span><br><span class="line">				<span class="string">"茂名市"</span>:[</span><br><span class="line">					<span class="string">"高州市"</span>,</span><br><span class="line">					<span class="string">"信宜市"</span>,</span><br><span class="line">					<span class="string">"化州市"</span></span><br><span class="line">				]</span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="string">"湖南市"</span>:&#123;</span><br><span class="line">				<span class="string">"长沙市"</span>:[</span><br><span class="line">					<span class="string">"芙蓉区"</span>,</span><br><span class="line">					<span class="string">"天心区"</span>,</span><br><span class="line">					<span class="string">"雨花区"</span></span><br><span class="line">				]</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure></p>
 <p>然后获取一下元素对象<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">      <span class="keyword">var</span> pro = <span class="built_in">document</span>.querySelector(<span class="string">'.provinces'</span>);</span><br><span class="line"><span class="keyword">var</span> city = <span class="built_in">document</span>.querySelector(<span class="string">'.city'</span>);</span><br><span class="line"><span class="keyword">var</span> reg = <span class="built_in">document</span>.querySelector(<span class="string">'.region'</span>);</span><br><span class="line">      <span class="keyword">var</span> proList = <span class="built_in">document</span>.querySelector(<span class="string">'.proList'</span>);</span><br><span class="line"><span class="keyword">var</span> cityList = <span class="built_in">document</span>.querySelector(<span class="string">'.cityList'</span>);</span><br><span class="line"><span class="keyword">var</span> regList = <span class="built_in">document</span>.querySelector(<span class="string">'.regList'</span>);</span><br></pre></td></tr></table></figure></p>
@@ -226,7 +227,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">js 小程序</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">js</a>
         		</li>
       		
 		</ul>

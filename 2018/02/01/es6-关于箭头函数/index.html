@@ -9,18 +9,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>[es6]关于箭头函数 | 小白研究所</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="es6已经出台一段时间，也渐渐成为了主流。 还在撸es5的东西吗，那你就有点out了。 浅谈一下关于es6的箭头函数。 箭头函数是一种匿名函数，浅化了对于函数的定义。 12345678910function (a)&amp;#123;    console.log(a);    return a;&amp;#125;//箭头函数(a)=&amp;gt;&amp;#123;    console.log(a);    return">
+  <meta name="description" content="es6已经出台一段时间，也渐渐成为了主流。 还在撸es5的东西吗，那你就有点out了。 浅谈一下关于es6的箭头函数。 箭头函数是一种匿名函数，浅化了对于函数的定义。">
 <meta name="keywords" content="es6">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[es6]关于箭头函数">
 <meta property="og:url" content="http://yoursite.com/2018/02/01/es6-关于箭头函数/index.html">
 <meta property="og:site_name" content="小白研究所">
-<meta property="og:description" content="es6已经出台一段时间，也渐渐成为了主流。 还在撸es5的东西吗，那你就有点out了。 浅谈一下关于es6的箭头函数。 箭头函数是一种匿名函数，浅化了对于函数的定义。 12345678910function (a)&amp;#123;    console.log(a);    return a;&amp;#125;//箭头函数(a)=&amp;gt;&amp;#123;    console.log(a);    return">
+<meta property="og:description" content="es6已经出台一段时间，也渐渐成为了主流。 还在撸es5的东西吗，那你就有点out了。 浅谈一下关于es6的箭头函数。 箭头函数是一种匿名函数，浅化了对于函数的定义。">
 <meta property="og:locale" content="zh">
-<meta property="og:updated_time" content="2018-02-01T08:33:06.910Z">
+<meta property="og:updated_time" content="2018-02-07T08:37:28.930Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="[es6]关于箭头函数">
-<meta name="twitter:description" content="es6已经出台一段时间，也渐渐成为了主流。 还在撸es5的东西吗，那你就有点out了。 浅谈一下关于es6的箭头函数。 箭头函数是一种匿名函数，浅化了对于函数的定义。 12345678910function (a)&amp;#123;    console.log(a);    return a;&amp;#125;//箭头函数(a)=&amp;gt;&amp;#123;    console.log(a);    return">
+<meta name="twitter:description" content="es6已经出台一段时间，也渐渐成为了主流。 还在撸es5的东西吗，那你就有点out了。 浅谈一下关于es6的箭头函数。 箭头函数是一种匿名函数，浅化了对于函数的定义。">
   
     <link rel="alternative" href="/atom.xml" title="小白研究所" type="application/atom+xml">
   
@@ -179,8 +179,7 @@
         <p>es6已经出台一段时间，也渐渐成为了主流。</p>
 <p>还在撸es5的东西吗，那你就有点out了。</p>
 <p>浅谈一下关于es6的箭头函数。</p>
-<p>箭头函数是一种匿名函数，浅化了对于函数的定义。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> (<span class="params">a</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a);</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//箭头函数</span></span><br><span class="line">(a)=&gt;&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a);</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>箭头函数是一种匿名函数，浅化了对于函数的定义。<br><a id="more"></a><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> (<span class="params">a</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a);</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//箭头函数</span></span><br><span class="line">(a)=&gt;&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a);</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>对比一下就可以看出，改动的地方在哪里。但箭头函数不仅仅是变动了这些。<br>如果，你只有一个参数的时候</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//可以写成这样</span></span><br><span class="line">a=&gt;&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a);</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>但是这个方式只能用于只有一个参数，当你有多个参数的时候，要写成这样。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(a,b,c)=&gt;&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a+b+c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
